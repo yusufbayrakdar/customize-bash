@@ -1,10 +1,10 @@
 # Customize Bash
 Configure your bash to be fast and make it handsome.
-# Clone customization file into your etc file.
+# Clone customize-bash into your etc directory.
 ```
 sudo git clone https://github.com/yusufbayrakdar/customize-bash.git /etc/customize-bash
 ```
-# Import customize-bash into your bashrc file
+# Import customize-bash into your bashrc file.
 ```
 sudo echo source /etc/customize-bash/myBashRc >> /etc/bashrc
 ```
