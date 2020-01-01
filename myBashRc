@@ -6,9 +6,6 @@ if [ -z "$PS1" ]; then
 fi
 tput reset
 echo Welcome to$(echo -en '\033[00;31m') Terminal
-parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
 bind 'set completion-ignore-case on'        # Disable Case Sensitivty
 export PS1=$'\[\033[32m\]\h \xe2\x96\xb6 \[\033[33;1m\]\w`if [ $? = 0 ]; then echo "\[\033[01;32m\]$(parse_git_branch) ツ \xe2\x96\xb6"; else echo "\[\033[01;31m\]$(parse_git_branch) ¯\_(ツ)_/¯ \xe2\x96\xb6"; fi`\[\033[m\] '
 export CLICOLOR=1
@@ -50,16 +47,23 @@ export BASH_SILENCE_DEPRECATION_WARNING=1   # To orevent zsh give warnings
     alias cb="sudo rm /etc/.myBashRc.swp;sudo vim /etc/myBashRc"                       # open myBashRc with vim
     alias dw="cd /Users/$USER/Downloads"
     alias d="cd /Users/$USER/Desktop"
+    alias cl="cd /Users/$USER/Desktop/Classes"
+    alias gt='cd /Users/$USER/Desktop/Github'
     alias bn="cd /usr/local/bin"
     alias p="cd -"
     alias et='cd /etc'
     alias c=clear
+#-------------NPM Scripts-----------
+    alias ns="npm start"
+    alias ni="npm install"
 # -------------Functions------------
+    parse_git_branch() {
+        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+    }
     mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
     trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
     tt(){ /usr/bin/touch "$@" ;ls |grep -C 2 --color=always -n "$@";}
     rd(){ cat -n $1|sed -n "$2","$3"p; }        # read file between 2 lines 
-    v(){ /usr/bin/vim "$@";}
     cd() { builtin cd "$@"; ls -rhS; }          # Always list directory contents upon 'cd'
     go() {
         search=""
@@ -85,7 +89,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1   # To orevent zsh give warnings
 #   -------------------------------
 #   3. FILE AND FOLDER MANAGEMENT
 #   -------------------------------
-# zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
+#    zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
 #   extract:  Extract most known archives with one command
 #   ---------------------------------------------------------
     extract () {
@@ -112,23 +116,36 @@ export BASH_SILENCE_DEPRECATION_WARNING=1   # To orevent zsh give warnings
 #   4. SEARCHING
 #   ---------------------------
 
-    ff () { /usr/bin/find . -name "$@" 2>&1 | grep -v "find:*"|grep --color=always $@; }        # ff:       Find file under the current directory
-    fse (){ /usr/bin/find . -name '*'"$@"'*' 2>&1 | grep -v "find:*"|grep --color=always $@; }  # ffs:      Find file whose name is like the given string
+    ff () { 
+        /usr/bin/find . -name "$@" 2>&1 |
+        grep -v "find:*" |
+        grep --color=always $@; 
+    }        # ff:       Find file under the current directory
+    fse (){ 
+        /usr/bin/find . -name '*'"$@"'*' 2>&1 |
+        grep -v "find:*"|
+        grep --color=always $@; 
+    }  # ffs:      Find file whose name is like the given string
 
 #   ---------------------------
 #   5. PROCESS MANAGEMENT
 #   ---------------------------
     killport () { kill -9 $(lsof -i:"$1" -t); }                                 # kill processes listening on port $1
     findpid () { lsof -t -c "$@" ; }                                            # findpid: find out the pid of a specified process
-    my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }    # my_ps: List processes owned by my user:
+    myps() {                                                                   # myps: List processes owned by my user:
+        ps $@ -u $USER -o
+        pid,%cpu,%mem,start,time,bsdtime,command ;
+    }    
 
 #   ---------------------------
 #   6. NETWORKING
 #   ---------------------------
 
-#   Local IP
-    ip(){
-        ifconfig |grep --color=always -x '.\{61,64\}'|grep --color=always inet|grep --color=always netmask |cut -d 't' -f 2 |cut -d'n' -f 1|cut -d' ' -f2
+    ip(){                                                               #   Local IP
+        ifconfig |grep --color=always -x '.\{61,64\}'|
+        grep --color=always inet|grep --color=always
+        netmask |cut -d 't' -f 2 |cut -d'n' -f 1|
+        cut -d' ' -f2
     }
     alias gip='curl http://ipecho.net/plain; echo'                      # gip: Global IP Address
     alias openports='sudo lsof -i | grep --color=always LISTEN'         # openports:    All listening connections
